@@ -5,12 +5,22 @@
 package controlador;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modelos.Porcion;
+import modelos.Sabor;
 
 /**
  *
@@ -31,7 +41,55 @@ public class creatupastel extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher rd = request.getRequestDispatcher("jsp/creatupastel.jsp");
+        List<Sabor> sabores = listaSabores();
+        List<Porcion> porciones = listaPorciones();
+        request.setAttribute("sabores", sabores);
+        request.setAttribute("porciones", porciones);
          rd.forward(request, response);
+    }
+    
+    List<Sabor> listaSabores() {
+        List<Sabor> lista = new ArrayList<Sabor>();
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/endulza_tu_mundo", "root", "");
+            PreparedStatement ps = conexion.prepareStatement("SELECT * FROM sabor");
+            ResultSet resultados = ps.executeQuery();
+            while(resultados.next()) {
+                String nombre = resultados.getString("nombre");
+                Sabor s = new Sabor();
+                s.nombre = nombre;
+                lista.add(s);
+            }
+            conexion.close();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(creatupastel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(creatupastel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return lista;
+    }
+    
+    List<Porcion> listaPorciones() {
+        List<Porcion> lista = new ArrayList<Porcion>();
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Connection conexion = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/endulza_tu_mundo", "root", "");
+            PreparedStatement ps = conexion.prepareStatement("SELECT * FROM porciones");
+            ResultSet resultados = ps.executeQuery();
+            while(resultados.next()) {
+                String cantidad = resultados.getString("cantidad");
+                Porcion p = new Porcion();
+                p.cantidad = cantidad;
+                lista.add(p);
+            }
+            conexion.close();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(creatupastel.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(creatupastel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return lista;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

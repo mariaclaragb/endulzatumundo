@@ -29,14 +29,38 @@
         <a href="contactenos.html" target="ventana">Contactenos</a>
     </div>
 </br>
+<%@page import="java.util.List" %>
+<%@page import="modelos.Sabor" %>
+<%@page import="modelos.Porcion" %>
+<%
+List<Sabor> listaSabores = (List<Sabor>)request.getAttribute("sabores");
+List<Porcion> listaPorciones = (List<Porcion>)request.getAttribute("porciones");
+%>
     <!--Inicio de formularios -->
     <div class="contenedor-form">
         <h2 class="title animated rubberBand">Crea tu pastel</h2>
         <div class="formulario">
             <p class="animated bounceIn">Sabor del pastel</p>
-            <input type="text" name="sabor" placeholder="Chocolate, fresa, mora, etc." />
+            <select>
+                <%
+                Sabor sabor;
+                for(int i = 0; i < listaSabores.size(); i++){
+                    sabor = listaSabores.get(i);%>
+                <option value="<%= sabor.nombre %>"><%= sabor.nombre %></option>
+                
+                <%
+                }%>
+            </select>
             <p class="animated bounceIn">Cantidad de porciones</p>
-            <input type="text" name="porciones" placeholder="5-10 o mas">
+            <select>
+                <%
+                Porcion porcion;
+                for(int i = 0; i < listaPorciones.size(); i++) {
+                    porcion = listaPorciones.get(i);%>
+                    <option value="<%= porcion.cantidad %>"><%= porcion.cantidad %></option>
+                <%
+                }%>
+            </select>
             <p class="animated bounceIn">Tipo de molde</p>
             <input type="text" name="molde" placeholder="Redondo o otro tipo" />
             <p class="animated bounceIn">Relleno</p>
